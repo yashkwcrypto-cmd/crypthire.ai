@@ -1,36 +1,157 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CryptHire AI
 
-## Getting Started
+An AI-powered recruitment platform that automates resume analysis and candidate evaluation using intelligent algorithms.
 
-First, run the development server:
+## Features
 
+- **AI-Powered Resume Analysis**: Automatically analyzes resumes to identify skills, experience, and fit
+- **Candidate Management**: Track candidates through the hiring pipeline
+- **Admin Dashboard**: Comprehensive dashboard for recruiters and admins
+- **Report Generation**: Generate detailed reports in JSON or CSV format
+- **Email Notifications**: Automated email notifications for candidates
+- **Secure Authentication**: JWT-based authentication with role-based access control
+- **SQL Server Database**: Robust database backend with Microsoft SQL Server
+
+## Tech Stack
+
+- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: Microsoft SQL Server with mssql driver
+- **Authentication**: JWT with bcryptjs
+- **Validation**: Joi
+- **Email**: Nodemailer
+- **PDF Parsing**: pdf-parse
+
+## Prerequisites
+
+- Node.js 20+
+- Microsoft SQL Server
+- npm, yarn, or pnpm
+
+## Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd crypthire.ai
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit `.env` with your configuration:
+```env
+DB_SERVER=localhost
+DB_NAME=CryptHire
+DB_USER=sa
+DB_PASSWORD=your_password
+DB_ENCRYPT=false
 
-## Learn More
+JWT_SECRET=your-secret-key-change-in-production
+JWT_EXPIRES_IN=7d
 
-To learn more about Next.js, take a look at the following resources:
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+SMTP_FROM=noreply@crypthire.ai
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Set up the database:
+```bash
+# Run the SQL script in SQL Server Management Studio or via command line
+sqlcmd -S localhost -U sa -P your_password -i database/schema.sql
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Run the development server:
+```bash
+npm run dev
+```
 
-## Deploy on Vercel
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Usage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### For Candidates
+
+1. Navigate to `/portal/apply`
+2. Fill out the application form with your details
+3. Provide a resume URL (upload to cloud storage first)
+4. Submit your application
+
+### For Admins
+
+1. Navigate to `/portal/admin`
+2. Login with your credentials (default admin will be created by database script)
+3. View and manage candidates
+4. Trigger AI analysis on resumes
+5. Update candidate status
+6. Download reports
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth` - Login or Register (use `action` field)
+
+### Candidates
+- `POST /api/candidate` - Submit candidate application
+- `GET /api/admin/candidates` - Get all candidates (admin only)
+- `GET /api/admin/candidates/[id]` - Get specific candidate (admin only)
+- `PATCH /api/admin/candidates/[id]` - Update candidate status (admin only)
+
+### Analysis
+- `POST /api/admin/analyze` - Trigger AI analysis (admin only)
+
+### Reports
+- `GET /api/admin/report` - Generate report (JSON or CSV format)
+
+### Notifications
+- `POST /api/admin/notify` - Send interview/rejection emails (admin only)
+
+### Health
+- `GET /api/health` - Health check endpoint
+
+## Database Schema
+
+The application uses three main tables:
+- **Users**: Admin and recruiter accounts
+- **Candidates**: Submitted candidate applications
+- **AnalysisJobs**: AI analysis job tracking
+
+See `database/schema.sql` for the complete schema.
+
+## Security Notes
+
+- Change the default JWT_SECRET in production
+- Use strong database passwords
+- Configure SMTP with app-specific passwords
+- Enable SSL/TLS for database connections in production
+- Implement rate limiting for API endpoints
+
+## Development
+
+### Running Tests
+```bash
+npm test
+```
+
+### Building for Production
+```bash
+npm run build
+npm start
+```
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.

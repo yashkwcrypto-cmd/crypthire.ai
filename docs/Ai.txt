@@ -1,0 +1,287 @@
+we can custom form in web or google form (tools google form , and mern)
+				|
+data sentize layer (joi) and remove cv ai injection and setize proper data and store data datils
+or ai found prompt injection so it can auto sentize also add flag 
+				|
+then it can store all jb into google drive or local storage and  server path
+(multer can process it and add into google drive and local storage  also make data clean , and  and add details into our data base )
+				|
+then our ai anylize whole data (nvidia nim , deepseek , and   google model)
+				|
+then we can use multer and xlsx library to converi our ai json response into excel then also ai gives priority higl low the kined of stuff
+				|
+then run cron it can at the day end or admin can fetch also 
+				|
+also at the day end admin or hr sent main auto from cron
+				|
+also one  anylistic layer
+
+                                      AI RECRUITMENT PIPELINE
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          Candidate Submission Layer                          │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Option 1: Custom MERN Career Portal                                         │
+│  Option 2: Google Forms                                                      │
+│                                                                              │
+│  Uploads:                                                                    │
+│  • Resume (PDF/DOC/DOCX)                                                     │
+│  • Candidate Details                                                         │
+│  • Portfolio / Cover Letter                                                  │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    API Gateway (Express.js Backend)                          │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Authentication                                                               │
+│ Rate Limiting                                                                │
+│ Request Logging                                                              │
+│ File Validation                                                              │
+│ HTTPS                                                                        │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    Validation & Security Layer                               │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Joi Validation                                                               │
+│ Input Sanitization                                                           │
+│ HTML/XSS Removal                                                             │
+│ SQL Injection Protection                                                     │
+│ Prompt Injection Detection                                                   │
+│ AI Prompt Cleaning                                                           │
+│ Resume Text Cleaning                                                         │
+│ Duplicate Detection                                                          │
+│ Malware Scan (Optional)                                                      │
+│                                                                              │
+│ Output:                                                                      │
+│ • Clean Data                                                                 │
+│ • Security Flags                                                             │
+│ • AI Injection Score                                                         │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                     If Safe    │     If Suspicious
+                                │
+                                ▼
+                 Continue     Add Security Flag
+                              Store Original Copy
+                              Notify Admin
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         File Processing Layer                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Multer Upload                                                                │
+│                                                                              │
+│ Save Files To:                                                               │
+│                                                                              │
+│ Local Storage                                                                │
+│ Google Drive                                                                 │
+│ Server Storage                                                               │
+│ Azure Blob / AWS S3 (Future)                                                 │
+│                                                                              │
+│ Generate:                                                                    │
+│ File Hash                                                                    │
+│ Version ID                                                                   │
+│ Candidate Folder                                                             │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                           Database Layer                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Candidate Details                                                            │
+│ Resume Metadata                                                              │
+│ Google Drive File ID                                                         │
+│ Storage Paths                                                                │
+│ Security Flags                                                               │
+│ Validation Logs                                                              │
+│ Upload Time                                                                  │
+│ Processing Status                                                            │
+│                                                                              │
+│ SQL Server / PostgreSQL / MongoDB                                            │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          AI Analysis Layer                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Resume OCR (if needed)                                                       │
+│ Resume Parser                                                                │
+│ Skill Extraction                                                             │
+│ Experience Extraction                                                        │
+│ Education Detection                                                          │
+│ Certification Detection                                                      │
+│ Language Detection                                                           │
+│ Project Analysis                                                             │
+│ Resume Summary                                                               │
+│ ATS Score                                                                    │
+│ Job Matching                                                                 │
+│ Candidate Ranking                                                            │
+│ Fraud Detection                                                              │
+│ AI Prompt Validation                                                         │
+│                                                                              │
+│ AI Models                                                                    │
+│ • NVIDIA NIM                                                                 │
+│ • DeepSeek                                                                   │
+│ • Google Gemini                                                              │
+│                                                                              │
+│ Output JSON                                                                  │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    AI Prioritization Engine                                  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ High Priority                                                                │
+│ Medium Priority                                                              │
+│ Low Priority                                                                 │
+│ Reject (Optional)                                                            │
+│                                                                              │
+│ Confidence Score                                                             │
+│ Recommendation                                                               │
+│ Hiring Reason                                                                │
+│ Missing Skills                                                               │
+│ Matching Percentage                                                          │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    Report Generation Layer                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ JSON → XLSX                                                                  │
+│ JSON → CSV                                                                   │
+│ JSON → PDF                                                                   │
+│                                                                              │
+│ Libraries                                                                    │
+│ xlsx                                                                         │
+│ exceljs                                                                      │
+│ pdfkit                                                                       │
+│                                                                              │
+│ Reports                                                                      │
+│ Candidate List                                                               │
+│ Priority Report                                                              │
+│ Skill Matrix                                                                 │
+│ Hiring Summary                                                               │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                     Analytics & Dashboard Layer                              │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Total Applicants                                                             │
+│ Top Skills                                                                   │
+│ AI Scores                                                                    │
+│ Department-wise Applicants                                                   │
+│ Hiring Funnel                                                                │
+│ Monthly Trends                                                               │
+│ Rejected Reasons                                                             │
+│ Prompt Injection Attempts                                                    │
+│ Security Dashboard                                                           │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    Scheduler (Cron Jobs)                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Every Night                                                                  │
+│                                                                              │
+│ Re-analyze Pending Candidates                                                │
+│ Generate Daily Excel                                                         │
+│ Generate Daily PDF                                                           │
+│ Backup Database                                                              │
+│ Cleanup Temp Files                                                           │
+│ Sync Google Drive                                                            │
+│                                                                              │
+└───────────────────────────────┬──────────────────────────────────────────────┘
+                                │
+                     Manual Fetch OR Auto
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                   Notification & Delivery Layer                              │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ HR/Admin Dashboard                                                           │
+│ Email Reports                                                                │
+│ Daily Summary                                                                │
+│ High Priority Candidate Alert                                                │
+│ Google Drive Report Link                                                     │
+│ Excel Attachment                                                             │
+│ PDF Attachment                                                               │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Candidate
+    │
+    ▼
+Google Form / MERN Portal
+    │
+    ▼
+Express API
+    │
+    ▼
+Joi Validation
+    │
+    ▼
+Sanitization Layer
+    │
+    ├── Remove XSS
+    ├── Remove SQL Injection
+    ├── Detect Prompt Injection
+    ├── Clean Resume Text
+    └── Add Security Flags
+    │
+    ▼
+Multer Upload
+    │
+    ├── Local Storage
+    ├── Google Drive
+    └── Database Metadata
+    │
+    ▼
+AI Analysis
+(NVIDIA NIM + DeepSeek + Gemini)
+    │
+    ▼
+Structured JSON
+    │
+    ▼
+Priority Engine
+    │
+    ├── High
+    ├── Medium
+    ├── Low
+    └── Reject
+    │
+    ▼
+Excel / PDF Reports
+    │
+    ▼
+Analytics Dashboard
+    │
+    ▼
+Cron Scheduler
+    │
+    ▼
+Daily Email to HR/Admin
