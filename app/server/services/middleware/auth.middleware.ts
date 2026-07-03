@@ -9,29 +9,30 @@ export interface AuthUser {
   role: string;
 }
 
-export async function authenticate(request: NextRequest): Promise<AuthUser | null> {
+export async function authenticate(request: NextRequest): Promise<{ user?: AuthUser; error?: string }> {
   try {
     const authHeader = request.headers.get('authorization');
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return null;
+      return { error: 'Missing or invalid authorization header' };
     }
 
     const token = authHeader.substring(7);
     
     const decoded = jwt.verify(token, JWT_SECRET) as AuthUser;
-    return decoded;
-  } catch (error) {
-    return null;
+    return { user: decoded };
+  } catch (error: any) {
+    console.error('JWT Verification failed:', error);
+    return { error: `JWT Verification failed: ${error.message}` };
   }
 }
 
 export function requireAuth(handler: (request: NextRequest, user: AuthUser) => Promise<Response>) {
   return async (request: NextRequest): Promise<Response> => {
-    const user = await authenticate(request);
+    const { user, error } = await authenticate(request);
     
     if (!user) {
-      return ResponseHelper.unauthorized();
+      return ResponseHelper.unauthorized(error);
     }
 
     return handler(request, user);
@@ -41,10 +42,10 @@ export function requireAuth(handler: (request: NextRequest, user: AuthUser) => P
 export function requireRole(roles: string[]) {
   return function(handler: (request: NextRequest, user: AuthUser) => Promise<Response>) {
     return async (request: NextRequest): Promise<Response> => {
-      const user = await authenticate(request);
+      const { user, error } = await authenticate(request);
       
       if (!user) {
-        return ResponseHelper.unauthorized();
+        return ResponseHelper.unauthorized(error);
       }
 
       if (!roles.includes(user.role)) {

@@ -72,8 +72,8 @@ BEGIN
 END
 GO
 
--- Insert default admin user (password should be hashed in production)
+-- Insert default admin user (password is 'admin123')
 INSERT INTO Users (email, password, name, role)
-SELECT 'admin@crypthire.ai', '$2a$10$placeholder_hash_replace_me', 'Admin User', 'admin'
-WHERE NOT EXISTS (SELECT 1 FROM Users WHERE email = 'admin@crypthire.ai');
+SELECT 'admin@admin.com', '$2a$10$jTeV9QBDYo6HAwec6NjSOOhituaGjdAWiQiqa5ZYnhtGxOe.DlsPm', 'Admin User', 'admin'
+WHERE NOT EXISTS (SELECT 1 FROM Users WHERE email = 'admin@admin.com');
 GO

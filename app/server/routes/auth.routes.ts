@@ -6,7 +6,7 @@ import { ResponseHelper } from '@/app/server/response';
 export async function registerRoute(request: NextRequest) {
   try {
     const body = await request.json();
-    const { error, value } = registerSchema.validate(body);
+    const { error, value } = registerSchema.validate(body, { stripUnknown: true });
     if (error) {
       return ResponseHelper.badRequest(error.details[0].message);
     }
@@ -22,7 +22,7 @@ export async function registerRoute(request: NextRequest) {
 export async function loginRoute(request: NextRequest) {
   try {
     const body = await request.json();
-    const { error, value } = loginSchema.validate(body);
+    const { error, value } = loginSchema.validate(body, { stripUnknown: true });
     if (error) {
       return ResponseHelper.badRequest(error.details[0].message);
     }

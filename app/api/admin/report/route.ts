@@ -6,10 +6,10 @@ import { authenticate } from '@/app/server/services/middleware/auth.middleware';
 import { USER_ROLES } from '@/app/server/constants';
 
 export async function GET(request: NextRequest) {
-  const user = await authenticate(request);
+  const { user, error } = await authenticate(request);
   
   if (!user || (user.role !== USER_ROLES.ADMIN && user.role !== USER_ROLES.RECRUITER)) {
-    return ResponseHelper.unauthorized();
+    return ResponseHelper.unauthorized(error || 'Unauthorized access');
   }
 
   try {

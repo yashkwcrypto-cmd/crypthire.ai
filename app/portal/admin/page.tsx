@@ -47,9 +47,10 @@ export default function AdminPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setToken(data.token);
+        const token = data.data?.token;
+        setToken(token);
         setIsAuthenticated(true);
-        fetchCandidates(data.token);
+        fetchCandidates(token);
       } else {
         setError(data.error || 'Login failed');
       }

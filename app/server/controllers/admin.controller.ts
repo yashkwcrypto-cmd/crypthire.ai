@@ -21,8 +21,8 @@ export async function triggerAnalysis(candidateId: string) {
     logger.info('Analysis job created', { jobId: job.id, candidateId });
 
     try {
-      const resumeText = await getResumeText(candidate.resumeUrl);
-      const result = await aiPipeline.execute(Buffer.from(resumeText));
+      const resumeBuffer = await getResumeBuffer(candidate.resumeUrl);
+      const result = await aiPipeline.execute(resumeBuffer);
 
       if (!result.success || !result.data) {
         throw new Error(result.error || 'Pipeline execution failed');
@@ -69,26 +69,19 @@ export async function triggerAnalysis(candidateId: string) {
   }
 }
 
-/**
- * Reads resume PDF from local disk and extracts text
- */
-async function getResumeText(resumeUrl: string): Promise<string> {
+async function getResumeBuffer(resumeUrl: string): Promise<Buffer> {
   try {
     const path = require('path');
     const fs = require('fs').promises;
-    const pdf = require('pdf-parse');
 
     // Remove leading slash to make it a relative path in public folder
     const relativePath = resumeUrl.startsWith('/') ? resumeUrl.slice(1) : resumeUrl;
     const filePath = path.join(process.cwd(), 'public', relativePath);
     
-    const dataBuffer = await fs.readFile(filePath);
-    const data = await pdf(dataBuffer);
-    
-    return data.text;
+    return await fs.readFile(filePath);
   } catch (error) {
-    logger.error('Failed to extract resume text', error);
-    throw new Error('Could not parse resume file');
+    logger.error('Failed to read resume file', error);
+    throw new Error('Could not read resume file');
   }
 }
 

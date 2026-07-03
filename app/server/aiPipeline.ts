@@ -99,7 +99,7 @@ export class AIPipeline {
     if (text.length > 100000) {
       throw new Error('Resume content is too large');
     }
-    const suspiciousPatterns = [/script/i, /javascript:/i, /onerror=/i, /onload=/i];
+    const suspiciousPatterns = [/<script\b/i, /javascript:/i, /\bonerror=/i, /\bonload=/i];
     for (const pattern of suspiciousPatterns) {
       if (pattern.test(text)) {
         throw new Error('Suspicious content detected in resume');
