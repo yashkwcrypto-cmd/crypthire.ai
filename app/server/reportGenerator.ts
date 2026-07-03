@@ -112,12 +112,17 @@ export function generateCSVReport(candidates: Candidate[]): string {
     'Full Name',
     'Email',
     'Phone',
+    'Location',
     'Status',
     'Submitted At',
     'Score',
+    'Current Role',
+    'Current Company',
+    'Previous Companies',
     'Skills',
     'Experience',
     'Recommendation',
+    'Recommended Role'
   ];
 
   const rows = candidates.map(candidate => {
@@ -125,6 +130,11 @@ export function generateCSVReport(candidates: Candidate[]): string {
     let skills = '';
     let experience = '';
     let recommendation = '';
+    let location = '';
+    let currentRole = '';
+    let currentCompany = '';
+    let previousCompanies = '';
+    let recommendedRole = '';
 
     if (candidate.analysisResult) {
       try {
@@ -133,6 +143,11 @@ export function generateCSVReport(candidates: Candidate[]): string {
         skills = analysis.skills?.join(', ') || '';
         experience = analysis.experience || '';
         recommendation = analysis.recommendation || '';
+        location = analysis.location || '';
+        currentRole = analysis.currentRole || '';
+        currentCompany = analysis.currentCompany || '';
+        previousCompanies = analysis.previousCompanies?.join(', ') || '';
+        recommendedRole = analysis.recommendedJd || '';
       } catch (error) {
         // Ignore parsing errors
       }
@@ -143,13 +158,18 @@ export function generateCSVReport(candidates: Candidate[]): string {
       candidate.fullName,
       candidate.email,
       candidate.phone || '',
+      location,
       candidate.status,
       candidate.createdAt.toISOString(),
       score,
+      currentRole,
+      currentCompany,
+      previousCompanies,
       skills,
       experience,
       recommendation,
-    ].map(field => `"${field}"`).join(',');
+      recommendedRole
+    ].map(field => `"${(field || '').replace(/"/g, '""')}"`).join(',');
   });
 
   return [headers.join(','), ...rows].join('\n');

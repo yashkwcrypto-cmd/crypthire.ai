@@ -1,5 +1,5 @@
 import { executeQuery, executeScalar } from './connection';
-import { User, Candidate, AnalysisJob } from '../types';
+import { User, Candidate, AnalysisJob, JobDescription } from '../types';
 
 // User Queries
 export const userQueries = {
@@ -34,9 +34,9 @@ export const userQueries = {
 export const candidateQueries = {
   create: async (candidate: Omit<Candidate, 'id' | 'createdAt' | 'updatedAt'>): Promise<Candidate> => {
     const query = `
-      INSERT INTO Candidates (id, fullName, email, phone, resumeUrl, status, analysisResult, notes, createdAt, updatedAt)
+      INSERT INTO Candidates (id, fullName, email, phone, linkedinUrl, portfolioUrl, resumeUrl, status, analysisResult, notes, createdAt, updatedAt)
       OUTPUT INSERTED.*
-      VALUES (NEWID(), @fullName, @email, @phone, @resumeUrl, @status, @analysisResult, @notes, GETDATE(), GETDATE())
+      VALUES (NEWID(), @fullName, @email, @phone, @linkedinUrl, @portfolioUrl, @resumeUrl, @status, @analysisResult, @notes, GETDATE(), GETDATE())
     `;
     const result = await executeScalar<Candidate>(query, candidate);
     if (!result) throw new Error('Failed to create candidate');
@@ -82,6 +82,32 @@ export const candidateQueries = {
     `;
     return await executeScalar<Candidate>(query, { id, notes });
   },
+
+  update: async (id: string, data: Partial<Candidate>): Promise<Candidate | null> => {
+    if (Object.keys(data).length === 0) return await candidateQueries.findById(id);
+
+    const setClauses: string[] = [];
+    const params: any = { id };
+
+    for (const [key, value] of Object.entries(data)) {
+      setClauses.push(`${key} = @${key}`);
+      params[key] = value;
+    }
+    setClauses.push('updatedAt = GETDATE()');
+
+    const query = `
+      UPDATE Candidates
+      SET ${setClauses.join(', ')}
+      OUTPUT INSERTED.*
+      WHERE id = @id
+    `;
+    return await executeScalar<Candidate>(query, params);
+  },
+
+  delete: async (id: string): Promise<void> => {
+    const query = 'DELETE FROM Candidates WHERE id = @id';
+    await executeQuery(query, { id });
+  },
 };
 
 // AnalysisJob Queries
@@ -120,5 +146,45 @@ export const analysisJobQueries = {
   getPendingJobs: async (): Promise<AnalysisJob[]> => {
     const query = "SELECT * FROM AnalysisJobs WHERE status = 'queued' ORDER BY createdAt ASC";
     return await executeQuery<AnalysisJob>(query);
+  },
+};
+
+// JobDescription Queries
+export const jobDescriptionQueries = {
+  create: async (jd: Omit<JobDescription, 'id' | 'createdAt' | 'updatedAt'>): Promise<JobDescription> => {
+    const query = `
+      INSERT INTO JobDescriptions (id, title, description, isActive, createdAt, updatedAt)
+      OUTPUT INSERTED.*
+      VALUES (NEWID(), @title, @description, @isActive, GETDATE(), GETDATE())
+    `;
+    const result = await executeScalar<JobDescription>(query, jd);
+    if (!result) throw new Error('Failed to create job description');
+    return result;
+  },
+
+  getAll: async (): Promise<JobDescription[]> => {
+    const query = 'SELECT * FROM JobDescriptions ORDER BY createdAt DESC';
+    return await executeQuery<JobDescription>(query);
+  },
+
+  getActive: async (): Promise<JobDescription[]> => {
+    const query = 'SELECT * FROM JobDescriptions WHERE isActive = 1 ORDER BY createdAt DESC';
+    return await executeQuery<JobDescription>(query);
+  },
+
+  updateStatus: async (id: string, isActive: boolean): Promise<JobDescription | null> => {
+    const query = `
+      UPDATE JobDescriptions
+      SET isActive = @isActive, updatedAt = GETDATE()
+      OUTPUT INSERTED.*
+      WHERE id = @id
+    `;
+    return await executeScalar<JobDescription>(query, { id, isActive });
+  },
+
+  delete: async (id: string): Promise<boolean> => {
+    const query = 'DELETE FROM JobDescriptions WHERE id = @id';
+    await executeQuery(query, { id });
+    return true;
   },
 };

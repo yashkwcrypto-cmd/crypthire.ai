@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { ArrowRight, Bot, Zap, FileText, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -32,13 +33,14 @@ export default function Home() {
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
 
-      <nav className="border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-border bg-background/80 text-foreground backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Bot className="w-8 h-8 text-primary" />
             CryptHire <span className="text-primary">AI</span>
           </Link>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <Button variant="ghost" asChild className="hover:bg-primary/10 hover:text-primary">
               <Link href="/portal/apply">Apply Now</Link>
             </Button>
@@ -84,7 +86,7 @@ export default function Home() {
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="h-14 px-8 text-lg border-white/10 hover:bg-white/5 w-full sm:w-auto">
+            <Button size="lg" variant="outline" asChild className="h-14 px-8 text-lg border-border hover:bg-muted/50 w-full sm:w-auto">
               <Link href="/portal/admin">
                 Access Dashboard
               </Link>
@@ -100,7 +102,7 @@ export default function Home() {
           viewport={{ once: true, margin: "-100px" }}
         >
           <motion.div variants={itemVariants}>
-            <Card className="bg-white/5 border-white/10 backdrop-blur-xl hover:bg-white/10 transition-colors h-full">
+            <Card className="bg-muted/50 border-border backdrop-blur-xl hover:bg-muted transition-colors h-full">
               <CardContent className="p-8">
                 <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 border border-primary/30">
                   <Bot className="w-7 h-7 text-primary" />
@@ -110,15 +112,15 @@ export default function Home() {
                   Advanced AI algorithms instantly parse and analyze resumes to identify the most qualified candidates for your roles.
                 </p>
                 <ul className="mt-6 space-y-2">
-                  <li className="flex items-center text-sm text-gray-300 gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Semantic Matching</li>
-                  <li className="flex items-center text-sm text-gray-300 gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Skill Extraction</li>
+                  <li className="flex items-center text-sm text-muted-foreground gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Semantic Matching</li>
+                  <li className="flex items-center text-sm text-muted-foreground gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Skill Extraction</li>
                 </ul>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <Card className="bg-white/5 border-white/10 backdrop-blur-xl hover:bg-white/10 transition-colors h-full">
+            <Card className="bg-muted/50 border-border backdrop-blur-xl hover:bg-muted transition-colors h-full">
               <CardContent className="p-8">
                 <div className="w-14 h-14 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-6 border border-blue-500/30">
                   <Zap className="w-7 h-7 text-blue-400" />
@@ -128,15 +130,15 @@ export default function Home() {
                   Reduce time-to-hire from weeks to days with automated screening and instant candidate scoring.
                 </p>
                 <ul className="mt-6 space-y-2">
-                  <li className="flex items-center text-sm text-gray-300 gap-2"><CheckCircle2 className="w-4 h-4 text-blue-400" /> Real-time Processing</li>
-                  <li className="flex items-center text-sm text-gray-300 gap-2"><CheckCircle2 className="w-4 h-4 text-blue-400" /> Automated Pipelines</li>
+                  <li className="flex items-center text-sm text-muted-foreground gap-2"><CheckCircle2 className="w-4 h-4 text-blue-400" /> Real-time Processing</li>
+                  <li className="flex items-center text-sm text-muted-foreground gap-2"><CheckCircle2 className="w-4 h-4 text-blue-400" /> Automated Pipelines</li>
                 </ul>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <Card className="bg-white/5 border-white/10 backdrop-blur-xl hover:bg-white/10 transition-colors h-full">
+            <Card className="bg-muted/50 border-border backdrop-blur-xl hover:bg-muted transition-colors h-full">
               <CardContent className="p-8">
                 <div className="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-6 border border-purple-500/30">
                   <FileText className="w-7 h-7 text-purple-400" />
@@ -146,8 +148,8 @@ export default function Home() {
                   Generate comprehensive analysis reports with objective skills assessments and actionable hiring recommendations.
                 </p>
                 <ul className="mt-6 space-y-2">
-                  <li className="flex items-center text-sm text-gray-300 gap-2"><CheckCircle2 className="w-4 h-4 text-purple-400" /> Objective Scoring</li>
-                  <li className="flex items-center text-sm text-gray-300 gap-2"><CheckCircle2 className="w-4 h-4 text-purple-400" /> Exportable Reports</li>
+                  <li className="flex items-center text-sm text-muted-foreground gap-2"><CheckCircle2 className="w-4 h-4 text-purple-400" /> Objective Scoring</li>
+                  <li className="flex items-center text-sm text-muted-foreground gap-2"><CheckCircle2 className="w-4 h-4 text-purple-400" /> Exportable Reports</li>
                 </ul>
               </CardContent>
             </Card>
@@ -155,7 +157,7 @@ export default function Home() {
         </motion.div>
       </main>
       
-      <footer className="border-t border-white/5 bg-black/20 mt-20">
+      <footer className="border-t border-border bg-background/80 text-foreground mt-20">
         <div className="container mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} CryptHire AI. All rights reserved.</p>
           <div className="flex items-center gap-6 mt-4 md:mt-0">

@@ -19,11 +19,13 @@ export async function submitCandidate(payload: CandidateSubmissionPayload) {
     const candidate = await candidateQueries.create({
       fullName,
       email,
-      phone: phone || undefined,
+      phone: phone || null,
+      linkedinUrl: payload.linkedinUrl || null,
+      portfolioUrl: payload.portfolioUrl || null,
       resumeUrl,
       status: CANDIDATE_STATUS.PENDING,
-      analysisResult: undefined,
-      notes: undefined,
+      analysisResult: null,
+      notes: null,
     });
 
     logger.info('Candidate submitted successfully', { candidateId: candidate.id, email });

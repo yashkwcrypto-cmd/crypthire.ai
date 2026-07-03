@@ -25,6 +25,8 @@ BEGIN
         fullName NVARCHAR(255) NOT NULL,
         email NVARCHAR(255) NOT NULL,
         phone NVARCHAR(50),
+        linkedinUrl NVARCHAR(500),
+        portfolioUrl NVARCHAR(500),
         resumeUrl NVARCHAR(500) NOT NULL,
         status NVARCHAR(50) DEFAULT 'pending',
         analysisResult NVARCHAR(MAX),
@@ -55,6 +57,20 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_AnalysisJobs_CandidateId' AND object_id = OBJECT_ID('AnalysisJobs'))
 BEGIN
     CREATE INDEX IX_AnalysisJobs_CandidateId ON AnalysisJobs(candidateId);
+END
+GO
+
+-- JobDescriptions table
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'JobDescriptions')
+BEGIN
+    CREATE TABLE JobDescriptions (
+        id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+        title NVARCHAR(255) NOT NULL,
+        description NVARCHAR(MAX) NOT NULL,
+        isActive BIT DEFAULT 1,
+        createdAt DATETIME2 DEFAULT GETDATE(),
+        updatedAt DATETIME2 DEFAULT GETDATE()
+    );
 END
 GO
 

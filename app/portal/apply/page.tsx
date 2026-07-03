@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { Upload, FileText, CheckCircle, AlertCircle, Loader2, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator';
 
 export default function ApplyPage() {
-  const [formData, setFormData] = useState({ fullName: '', email: '', phone: '' });
+  const [formData, setFormData] = useState({ fullName: '', email: '', phone: '', linkedinUrl: '', portfolioUrl: '' });
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -37,6 +38,8 @@ export default function ApplyPage() {
     data.append('fullName', formData.fullName);
     data.append('email', formData.email);
     data.append('phone', formData.phone);
+    data.append('linkedinUrl', formData.linkedinUrl);
+    data.append('portfolioUrl', formData.portfolioUrl);
     data.append('resume', file);
 
     try {
@@ -45,7 +48,7 @@ export default function ApplyPage() {
       if (response.ok) {
         setStatus('success');
         setMessage('Application submitted successfully! Our AI is now analyzing your profile.');
-        setFormData({ fullName: '', email: '', phone: '' });
+        setFormData({ fullName: '', email: '', phone: '', linkedinUrl: '', portfolioUrl: '' });
         setFile(null);
       } else {
         setStatus('error');
@@ -66,15 +69,18 @@ export default function ApplyPage() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/20 blur-[120px] rounded-full mix-blend-screen animate-blob animation-delay-2000 pointer-events-none" />
       <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] bg-purple-500/20 blur-[100px] rounded-full mix-blend-screen animate-blob animation-delay-4000 pointer-events-none" />
 
-      <nav className="border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-border bg-background/80 text-foreground backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold text-foreground flex items-center gap-2">
             <Bot className="w-6 h-6 text-primary" />
             CryptHire Application
           </Link>
-          <Button variant="ghost" asChild className="hover:bg-primary/10 hover:text-primary">
-            <Link href="/">Back to Home</Link>
-          </Button>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Button variant="ghost" asChild className="hover:bg-primary/10 hover:text-primary">
+              <Link href="/">Back to Home</Link>
+            </Button>
+          </div>
         </div>
       </nav>
 
@@ -85,7 +91,7 @@ export default function ApplyPage() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="w-full max-w-xl"
         >
-          <Card className="border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+          <Card className="border-border bg-card text-card-foreground backdrop-blur-xl shadow-2xl relative overflow-hidden">
             {loading && (
               <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-20 flex flex-col items-center justify-center">
                 <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
@@ -126,7 +132,7 @@ export default function ApplyPage() {
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     placeholder="Jane Doe"
-                    className="bg-white/5 border-white/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:border-primary transition-all"
+                    className="bg-muted/50 border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:border-primary transition-all"
                   />
                 </div>
                 
@@ -139,7 +145,7 @@ export default function ApplyPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="jane@example.com"
-                      className="bg-white/5 border-white/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:border-primary transition-all"
+                      className="bg-muted/50 border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:border-primary transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -150,18 +156,43 @@ export default function ApplyPage() {
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+1 (555) 000-0000"
-                      className="bg-white/5 border-white/10 focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:border-primary transition-all"
+                      className="bg-muted/50 border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:border-primary transition-all"
                     />
                   </div>
                 </div>
 
-                <Separator className="bg-white/10 my-6" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="space-y-2">
+                    <Label htmlFor="linkedinUrl">LinkedIn URL (Optional)</Label>
+                    <Input
+                      id="linkedinUrl"
+                      type="url"
+                      value={formData.linkedinUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
+                      placeholder="https://linkedin.com/in/janedoe"
+                      className="bg-muted/50 border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:border-primary transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="portfolioUrl">Portfolio URL (Optional)</Label>
+                    <Input
+                      id="portfolioUrl"
+                      type="url"
+                      value={formData.portfolioUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, portfolioUrl: e.target.value })}
+                      placeholder="https://janedoe.com"
+                      className="bg-muted/50 border-border focus-visible:ring-primary focus-visible:ring-offset-0 focus-visible:border-primary transition-all"
+                    />
+                  </div>
+                </div>
+
+                <Separator className="bg-muted my-6" />
 
                 <div className="space-y-2">
                   <Label>Resume (PDF)</Label>
                   <div 
                     className={`relative border-2 border-dashed rounded-xl p-8 transition-all duration-200 ease-in-out text-center group ${
-                      dragActive ? 'border-primary bg-primary/10 scale-[1.02]' : 'border-white/20 bg-white/5 hover:border-primary/50 hover:bg-white/10'
+                      dragActive ? 'border-primary bg-primary/10 scale-[1.02]' : 'border-white/20 bg-muted/50 hover:border-primary/50 hover:bg-muted'
                     }`}
                     onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                     onDragLeave={() => setDragActive(false)}
@@ -207,7 +238,7 @@ export default function ApplyPage() {
                         </>
                       ) : (
                         <>
-                          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-muted-foreground group-hover:text-primary group-hover:bg-primary/20 group-hover:scale-110 transition-all">
+                          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground group-hover:text-primary group-hover:bg-primary/20 group-hover:scale-110 transition-all">
                             <Upload className="w-6 h-6" />
                           </div>
                           <div>

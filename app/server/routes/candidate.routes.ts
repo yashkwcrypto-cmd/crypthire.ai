@@ -39,6 +39,8 @@ export async function POST(request: NextRequest) {
         fullName: formData.get('fullName'),
         email: formData.get('email'),
         phone: formData.get('phone') || undefined,
+        linkedinUrl: formData.get('linkedinUrl') || undefined,
+        portfolioUrl: formData.get('portfolioUrl') || undefined,
         resumeUrl,
       };
     } else {

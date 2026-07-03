@@ -36,7 +36,7 @@ export class AIPipeline {
     };
   }
 
-  async execute(resumeBuffer: Buffer): Promise<PipelineResult> {
+  async execute(resumeBuffer: Buffer, jobDescription?: string, linkedinUrl?: string, portfolioUrl?: string): Promise<PipelineResult> {
     const startTime = Date.now();
     const steps: string[] = [];
 
@@ -49,7 +49,7 @@ export class AIPipeline {
       this.validateContent(parsed.text);
       logger.info('Content validation passed');
       steps.push('ai_analysis');
-      const analysis = await this.analyzeWithRetry(parsed.text);
+      const analysis = await this.analyzeWithRetry(parsed.text, jobDescription, linkedinUrl, portfolioUrl);
       logger.info('AI analysis completed', { score: analysis.score });
       const processingTime = Date.now() - startTime;
       return {
@@ -79,14 +79,14 @@ export class AIPipeline {
     }
   }
 
-  private async analyzeWithRetry(text: string, retries = 0): Promise<AnalysisResult> {
+  private async analyzeWithRetry(text: string, jobDescription?: string, linkedinUrl?: string, portfolioUrl?: string, retries = 0): Promise<AnalysisResult> {
     try {
-      return await analyzeResume(text);
+      return await analyzeResume(text, jobDescription, linkedinUrl, portfolioUrl);
     } catch (error: any) {
       if (retries < this.config.maxRetries) {
         logger.warn(`AI analysis failed, retrying (${retries + 1}/${this.config.maxRetries})`);
         await new Promise(resolve => setTimeout(resolve, 1000 * (retries + 1)));
-        return this.analyzeWithRetry(text, retries + 1);
+        return this.analyzeWithRetry(text, jobDescription, linkedinUrl, portfolioUrl, retries + 1);
       }
       throw error;
     }

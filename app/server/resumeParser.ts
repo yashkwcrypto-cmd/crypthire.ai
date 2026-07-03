@@ -1,4 +1,4 @@
-import pdf from 'pdf-parse';
+const pdf = require('pdf-parse');
 import { logger } from '@/app/server/logger';
 
 export interface ParsedResume {

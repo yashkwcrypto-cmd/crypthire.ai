@@ -27,21 +27,21 @@ export async function authenticate(request: NextRequest): Promise<{ user?: AuthU
   }
 }
 
-export function requireAuth(handler: (request: NextRequest, user: AuthUser) => Promise<Response>) {
-  return async (request: NextRequest): Promise<Response> => {
+export function requireAuth(handler: (request: NextRequest, user: AuthUser, context?: any) => Promise<Response>) {
+  return async (request: NextRequest, context?: any): Promise<Response> => {
     const { user, error } = await authenticate(request);
     
     if (!user) {
       return ResponseHelper.unauthorized(error);
     }
 
-    return handler(request, user);
+    return handler(request, user, context);
   };
 }
 
 export function requireRole(roles: string[]) {
-  return function(handler: (request: NextRequest, user: AuthUser) => Promise<Response>) {
-    return async (request: NextRequest): Promise<Response> => {
+  return function(handler: (request: NextRequest, user: AuthUser, context?: any) => Promise<Response>) {
+    return async (request: NextRequest, context?: any): Promise<Response> => {
       const { user, error } = await authenticate(request);
       
       if (!user) {
@@ -52,7 +52,7 @@ export function requireRole(roles: string[]) {
         return ResponseHelper.forbidden('Insufficient permissions');
       }
 
-      return handler(request, user);
+      return handler(request, user, context);
     };
   };
 }

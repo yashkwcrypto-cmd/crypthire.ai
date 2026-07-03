@@ -8,15 +8,26 @@ export interface User {
   updatedAt: Date;
 }
 
+export interface JobDescription {
+  id: string;
+  title: string;
+  description: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Candidate {
   id: string;
   fullName: string;
   email: string;
-  phone?: string;
+  phone: string | null;
+  linkedinUrl: string | null;
+  portfolioUrl: string | null;
   resumeUrl: string;
   status: string;
-  analysisResult?: string;
-  notes?: string;
+  analysisResult: string | null;
+  notes: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,18 +57,27 @@ export interface CandidateSubmissionPayload {
   fullName: string;
   email: string;
   phone?: string;
+  linkedinUrl?: string;
+  portfolioUrl?: string;
   resumeUrl: string;
 }
 
 export interface AnalysisResult {
   score: number;
-  skills: string[];
+  currentRole?: string;
+  currentCompany?: string;
+  previousCompanies?: string[];
+  location?: string;
   experience: string;
+  skills: string[];
   education: string;
   summary: string;
   strengths: string[];
   weaknesses: string[];
+  issues: string[];
+  requirementsMatch: string;
   recommendation: string;
+  recommendedJd?: string;
 }
 
 export interface DbRecord {

@@ -13,12 +13,13 @@ export const POST = requireRole([USER_ROLES.ADMIN])(
       
       const schema = Joi.object({
         candidateId: Joi.string().required(),
+        jobDescription: Joi.string().allow('', null).optional(),
       });
       
-      const validated = validateBody(schema, body) as { candidateId: string };
-      const { candidateId } = validated;
+      const validated = validateBody(schema, body) as { candidateId: string; jobDescription?: string };
+      const { candidateId, jobDescription } = validated;
 
-      const result = await triggerAnalysis(candidateId);
+      const result = await triggerAnalysis(candidateId, jobDescription);
       return ResponseHelper.success(result, 'Analysis triggered successfully');
     } catch (error: any) {
       const message = error.message || 'Failed to trigger analysis';

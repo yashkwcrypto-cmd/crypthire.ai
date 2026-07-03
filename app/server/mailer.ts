@@ -27,11 +27,13 @@ export async function sendEmail({
   subject,
   html,
   text,
+  attachments,
 }: {
   to: string;
   subject: string;
   html?: string;
   text?: string;
+  attachments?: any[];
 }): Promise<boolean> {
   try {
     const transporter = createTransporter();
@@ -42,6 +44,7 @@ export async function sendEmail({
       subject,
       html: html || text,
       text,
+      attachments,
     };
 
     await transporter.sendMail(mailOptions);
@@ -116,4 +119,47 @@ export async function sendRejectionEmail(
   `;
 
   return sendEmail({ to: email, subject, html });
+}
+
+/**
+ * Sends the daily cron PDF report to HR
+ */
+export async function sendDailyReportEmail(
+  hrEmail: string,
+  pdfBuffer: Buffer,
+  dateString: string,
+  csvString?: string
+): Promise<boolean> {
+  const subject = `Daily Candidates Report - ${dateString}`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #7c3aed;">Daily Candidate Report</h2>
+      <p>Hello,</p>
+      <p>Please find attached the daily AI analysis report of all candidates submitted on <strong>${dateString}</strong>.</p>
+      <p>Best regards,<br>The CryptHire AI Team</p>
+    </div>
+  `;
+
+  const attachments: any[] = [
+    {
+      filename: `candidates-report-${dateString.replace(/\//g, '-')}.pdf`,
+      content: pdfBuffer,
+      contentType: 'application/pdf',
+    },
+  ];
+
+  if (csvString) {
+    attachments.push({
+      filename: `candidates-data-${dateString.replace(/\//g, '-')}.csv`,
+      content: Buffer.from(csvString, 'utf-8'),
+      contentType: 'text/csv',
+    });
+  }
+
+  return sendEmail({
+    to: hrEmail,
+    subject,
+    html,
+    attachments,
+  });
 }

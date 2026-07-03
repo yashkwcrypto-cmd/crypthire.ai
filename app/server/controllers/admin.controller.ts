@@ -4,7 +4,7 @@ import { logger } from '../logger';
 import { aiPipeline } from '../aiPipeline';
 import fs from 'fs/promises';
 
-export async function triggerAnalysis(candidateId: string) {
+export async function triggerAnalysis(candidateId: string, jobDescription?: string) {
   try {
     const candidate = await candidateQueries.findById(candidateId);
     if (!candidate) {
@@ -22,7 +22,7 @@ export async function triggerAnalysis(candidateId: string) {
 
     try {
       const resumeBuffer = await getResumeBuffer(candidate.resumeUrl);
-      const result = await aiPipeline.execute(resumeBuffer);
+      const result = await aiPipeline.execute(resumeBuffer, jobDescription, candidate.linkedinUrl || undefined, candidate.portfolioUrl || undefined);
 
       if (!result.success || !result.data) {
         throw new Error(result.error || 'Pipeline execution failed');
@@ -118,6 +118,35 @@ export async function updateCandidateStatus(id: string, status: string) {
     return candidate;
   } catch (error) {
     logger.error('Failed to update candidate status', error);
+    throw error;
+  }
+}
+
+export async function updateCandidateDetails(id: string, data: { fullName?: string; email?: string; phone?: string | null; linkedinUrl?: string | null; portfolioUrl?: string | null; }) {
+  try {
+    const candidate = await candidateQueries.update(id, data);
+    if (!candidate) {
+      throw new Error('Candidate not found');
+    }
+    logger.info('Candidate details updated', { candidateId: id });
+    return candidate;
+  } catch (error) {
+    logger.error('Failed to update candidate details', error);
+    throw error;
+  }
+}
+
+export async function deleteCandidate(id: string) {
+  try {
+    const candidate = await candidateQueries.findById(id);
+    if (!candidate) {
+      throw new Error('Candidate not found');
+    }
+    await candidateQueries.delete(id);
+    logger.info('Candidate deleted', { candidateId: id });
+    return true;
+  } catch (error) {
+    logger.error('Failed to delete candidate', error);
     throw error;
   }
 }
