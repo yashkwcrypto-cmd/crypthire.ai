@@ -26,6 +26,7 @@ interface Candidate {
   phone?: string;
   linkedinUrl?: string;
   portfolioUrl?: string;
+  resumeUrl?: string;
   status: string;
   analysisResult?: string;
   createdAt: string;
@@ -50,7 +51,7 @@ export default function AdminPage() {
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [expandedJds, setExpandedJds] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [editingCandidate, setEditingCandidate] = useState<Candidate | null>(null);
@@ -295,7 +296,7 @@ export default function AdminPage() {
 
   const handleDownloadReport = async () => {
     try {
-      const response = await fetch('/api/admin/report?format=csv', {
+      const response = await fetch('/api/admin/report?format=excel', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -304,13 +305,40 @@ export default function AdminPage() {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'candidates-report.csv';
+        a.download = 'candidates-report.xlsx';
         a.click();
       } else {
         setError('Report download failed');
       }
     } catch (error) {
       setError('Network error');
+    }
+  };
+
+  const handleDownloadResume = async (candidate: Candidate) => {
+    if (!candidate.resumeUrl) {
+      setError('No resume available for this candidate');
+      return;
+    }
+    
+    try {
+      // If resumeUrl is a full URL, download directly
+      if (candidate.resumeUrl.startsWith('http')) {
+        const a = document.createElement('a');
+        a.href = candidate.resumeUrl;
+        a.download = `${candidate.fullName.replace(/\s+/g, '_')}_resume.pdf`;
+        a.target = '_blank';
+        a.click();
+      } else {
+        // If it's a relative path or stored file, you might need to fetch from your API
+        const a = document.createElement('a');
+        a.href = candidate.resumeUrl;
+        a.download = `${candidate.fullName.replace(/\s+/g, '_')}_resume.pdf`;
+        a.target = '_blank';
+        a.click();
+      }
+    } catch (error) {
+      setError('Failed to download resume');
     }
   };
 
@@ -470,7 +498,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background relative flex flex-col overflow-x-hidden">
+    <div className="min-h-screen bg-background relative flex flex-col overflow-hidden w-full">
       {reportProgress !== null && (
         <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm flex items-center justify-center">
           <Card className="w-full max-w-sm bg-card/90 border-primary/20 shadow-2xl shadow-primary/10">
@@ -530,7 +558,7 @@ export default function AdminPage() {
         </div>
       </nav>
 
-      <main className="flex-1 container mx-auto px-6 py-10 z-10">
+      <main className="flex-1 container mx-auto px-6 py-10 z-10 overflow-hidden overflow-x-hidden">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight mb-2">Recruitment Pipeline</h1>
@@ -721,6 +749,19 @@ export default function AdminPage() {
                         </TableCell>
                         <TableCell className="text-right pr-6">
                           <div className="flex items-center justify-end gap-2">
+                            {candidate.resumeUrl && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDownloadResume(candidate)}
+                                className="border-green-500/30 text-green-400 hover:bg-green-500/10"
+                                title="Download Resume"
+                              >
+                                <Download className="w-3 h-3 mr-1" />
+                                Resume
+                              </Button>
+                            )}
+                            
                             <Button
                               variant="outline"
                               size="sm"
@@ -810,7 +851,7 @@ export default function AdminPage() {
                 <div className="text-sm text-muted-foreground">
                   Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredCandidates.length)} of {filteredCandidates.length} entries
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <Button
                     variant="outline"
                     size="sm"
@@ -820,9 +861,32 @@ export default function AdminPage() {
                   >
                     Previous
                   </Button>
-                  <div className="text-sm font-medium px-4">
-                    Page {currentPage} of {totalPages}
-                  </div>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
+                    // Show first page, last page, current page, and pages around current
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1)
+                    ) {
+                      return (
+                        <Button
+                          key={page}
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(page)}
+                          className={currentPage === page ? "bg-primary text-primary-foreground" : "border-border hover:bg-muted/50"}
+                        >
+                          {page}
+                        </Button>
+                      );
+                    } else if (
+                      page === currentPage - 2 ||
+                      page === currentPage + 2
+                    ) {
+                      return <span key={page} className="px-2 text-muted-foreground">...</span>;
+                    }
+                    return null;
+                  })}
                   <Button
                     variant="outline"
                     size="sm"

@@ -1,11 +1,12 @@
 import nodemailer from 'nodemailer';
 import { logger } from '@/app/server/logger';
 
-// Email configuration
 const SMTP_CONFIG = {
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587'),
   secure: false,
+  connectionTimeout: 10000, // 10 seconds max wait
+  greetingTimeout: 10000,
   auth: {
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || '',
@@ -128,7 +129,7 @@ export async function sendDailyReportEmail(
   hrEmail: string,
   pdfBuffer: Buffer,
   dateString: string,
-  csvString?: string
+  excelBuffer?: Buffer
 ): Promise<boolean> {
   const subject = `Daily Candidates Report - ${dateString}`;
   const html = `
@@ -148,11 +149,11 @@ export async function sendDailyReportEmail(
     },
   ];
 
-  if (csvString) {
+  if (excelBuffer) {
     attachments.push({
-      filename: `candidates-data-${dateString.replace(/\//g, '-')}.csv`,
-      content: Buffer.from(csvString, 'utf-8'),
-      contentType: 'text/csv',
+      filename: `candidates-data-${dateString.replace(/\//g, '-')}.xlsx`,
+      content: excelBuffer,
+      contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
   }
 

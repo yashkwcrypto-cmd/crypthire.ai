@@ -64,7 +64,7 @@ export default function Home() {
           
           <motion.h1 
             variants={itemVariants}
-            className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500"
+            className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r dark:from-white dark:via-gray-200 dark:to-gray-500 from-gray-900 via-gray-700 to-gray-500"
           >
             Hire the Future, <br className="hidden md:block" />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-400">

@@ -1,7 +1,7 @@
 import { candidateQueries } from '@/app/server/db/queries';
 import { triggerAnalysis } from '@/app/server/controllers/admin.controller';
 import { generateDailyReport } from '@/app/server/pdfGenerator';
-import { generateCSVReport } from '@/app/server/reportGenerator';
+import { generateExcelReport } from '@/app/server/reportGenerator';
 import { sendDailyReportEmail } from '@/app/server/mailer';
 import { logger } from '@/app/server/logger';
 
@@ -39,14 +39,14 @@ export async function generateAndSendDailyReport(): Promise<{ success: boolean; 
       }
     }
 
-    // 3. Generate PDF and CSV Reports
+    // 3. Generate PDF and Excel Reports
     const dateString = new Date().toLocaleDateString();
     const pdfBuffer = await generateDailyReport(todayCandidates, dateString);
-    const csvString = generateCSVReport(todayCandidates);
+    const excelBuffer = await generateExcelReport(todayCandidates);
 
     // 4. Email Reports to HR
     const hrEmail = process.env.HR_EMAIL || 'yashkw.crypto@gmail.com';
-    const emailSent = await sendDailyReportEmail(hrEmail, pdfBuffer, dateString, csvString);
+    const emailSent = await sendDailyReportEmail(hrEmail, pdfBuffer, dateString, excelBuffer);
 
     if (emailSent) {
       logger.info('Daily reports emailed to HR successfully.');

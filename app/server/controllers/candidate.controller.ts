@@ -7,18 +7,20 @@ export async function submitCandidate(payload: CandidateSubmissionPayload) {
   try {
     const { fullName, email, phone, resumeUrl } = payload;
 
-    // Check if candidate with same email already exists
-    const existingCandidate = await candidateQueries.getAll();
-    const duplicate = existingCandidate.find(c => c.email.toLowerCase() === email.toLowerCase());
-    
-    if (duplicate) {
-      throw new Error('A candidate with this email has already submitted');
+    // Check if candidate with same email already exists (only if email is provided)
+    if (email && email.trim()) {
+      const existingCandidate = await candidateQueries.getAll();
+      const duplicate = existingCandidate.find(c => c.email && c.email.toLowerCase() === email.toLowerCase());
+      
+      if (duplicate) {
+        throw new Error('A candidate with this email has already submitted');
+      }
     }
 
     // Create candidate
     const candidate = await candidateQueries.create({
-      fullName,
-      email,
+      fullName: fullName || 'Anonymous',
+      email: email || 'anonymous@no-email.com',
       phone: phone || null,
       linkedinUrl: payload.linkedinUrl || null,
       portfolioUrl: payload.portfolioUrl || null,

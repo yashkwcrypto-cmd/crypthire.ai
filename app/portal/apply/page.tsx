@@ -21,11 +21,6 @@ export default function ApplyPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.fullName.trim() || !formData.email.trim()) {
-      setStatus('error');
-      setMessage('Please fill in your name and email.');
-      return;
-    }
     if (!file) {
       setStatus('error');
       setMessage('Please upload your resume (PDF only)');
@@ -63,7 +58,7 @@ export default function ApplyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background relative flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-background relative flex flex-col overflow-hidden w-full">
       {/* Animated Blobs */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 blur-[120px] rounded-full mix-blend-screen animate-blob pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/20 blur-[120px] rounded-full mix-blend-screen animate-blob animation-delay-2000 pointer-events-none" />
@@ -126,7 +121,7 @@ export default function ApplyPage() {
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName">Full Name (Optional)</Label>
                   <Input
                     id="fullName"
                     value={formData.fullName}
@@ -138,7 +133,7 @@ export default function ApplyPage() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
+                    <Label htmlFor="email">Email Address (Optional)</Label>
                     <Input
                       id="email"
                       type="email"
@@ -149,7 +144,7 @@ export default function ApplyPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
+                    <Label htmlFor="phone">Phone Number (Optional)</Label>
                     <Input
                       id="phone"
                       type="tel"

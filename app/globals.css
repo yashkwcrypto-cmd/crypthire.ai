@@ -49,23 +49,23 @@
 }
 
 :root {
-  --background: oklch(1 0 0); /* Pure White */
-  --foreground: oklch(0.15 0 0); /* Near Black */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0 0);
+  --background: oklch(0.99 0.01 270); /* Very subtle cool white/blue tint */
+  --foreground: oklch(0.15 0 270); /* Near Black with slight cool tint */
+  --card: oklch(1 0 0); /* Pure White cards to pop off background */
+  --card-foreground: oklch(0.15 0 270);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0 0);
+  --popover-foreground: oklch(0.15 0 270);
   --primary: oklch(0.45 0.2 270); /* Vibrant Electric Indigo/Purple */
   --primary-foreground: oklch(0.98 0 0); /* Pure White */
-  --secondary: oklch(0.96 0 0); /* Very Light Gray */
-  --secondary-foreground: oklch(0.2 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.96 0 0);
-  --accent-foreground: oklch(0.2 0 0);
+  --secondary: oklch(0.96 0.01 270); /* Subtle cool gray */
+  --secondary-foreground: oklch(0.2 0 270);
+  --muted: oklch(0.96 0.01 270);
+  --muted-foreground: oklch(0.45 0.01 270);
+  --accent: oklch(0.96 0.01 270);
+  --accent-foreground: oklch(0.2 0 270);
   --destructive: oklch(0.5 0.2 25); /* Vibrant Red */
-  --border: oklch(0.9 0 0);
-  --input: oklch(0.9 0 0);
+  --border: oklch(0.92 0.01 270);
+  --input: oklch(0.92 0.01 270);
   --ring: oklch(0.45 0.2 270);
   --chart-1: oklch(0.45 0.2 270);
   --chart-2: oklch(0.6 0.15 190); /* Teal */
@@ -122,10 +122,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground selection:bg-primary/30 selection:text-primary-foreground;
+    @apply bg-background text-foreground selection:bg-primary/30 selection:text-primary-foreground overflow-x-hidden;
   }
   html {
-    @apply font-sans;
+    @apply font-sans overflow-x-hidden;
   }
 }
 
@@ -141,6 +141,20 @@
   }
   .animation-delay-4000 {
     animation-delay: 4s;
+  }
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground));
+    border-radius: 3px;
   }
 }
 

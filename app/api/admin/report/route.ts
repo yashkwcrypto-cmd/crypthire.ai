@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getCandidates } from '@/app/server/controllers/admin.controller';
-import { generateSummaryReport, generateCSVReport } from '@/app/server/reportGenerator';
+import { generateSummaryReport, generateExcelReport } from '@/app/server/reportGenerator';
 import { ResponseHelper } from '@/app/server/response';
 import { authenticate } from '@/app/server/services/middleware/auth.middleware';
 import { USER_ROLES } from '@/app/server/constants';
@@ -18,12 +18,12 @@ export async function GET(request: NextRequest) {
 
     const candidates = await getCandidates();
 
-    if (format === 'csv') {
-      const csv = generateCSVReport(candidates);
-      return new Response(csv, {
+    if (format === 'csv' || format === 'excel') {
+      const excelBuffer = await generateExcelReport(candidates);
+      return new Response(excelBuffer, {
         headers: {
-          'Content-Type': 'text/csv',
-          'Content-Disposition': 'attachment; filename="candidates-report.csv"',
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'Content-Disposition': 'attachment; filename="candidates-report.xlsx"',
         },
       });
     }

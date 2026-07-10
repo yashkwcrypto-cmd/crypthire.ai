@@ -63,6 +63,9 @@ export interface CandidateSubmissionPayload {
 }
 
 export interface AnalysisResult {
+  extractedName?: string;
+  extractedEmail?: string;
+  extractedPhone?: string;
   score: number;
   currentRole?: string;
   currentCompany?: string;

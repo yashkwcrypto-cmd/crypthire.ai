@@ -1,5 +1,6 @@
 import { Candidate } from '@/app/server/types';
 import { logger } from '@/app/server/logger';
+import ExcelJS from 'exceljs';
 
 export interface CandidateReport {
   candidate: {
@@ -104,28 +105,33 @@ export function generateSummaryReport(candidates: Candidate[]): {
 }
 
 /**
- * Generates a CSV report for candidates
+ * Generates an Excel report for candidates
  */
-export function generateCSVReport(candidates: Candidate[]): string {
+export async function generateExcelReport(candidates: Candidate[]): Promise<Buffer> {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Candidates Report');
+
   const headers = [
-    'ID',
-    'Full Name',
-    'Email',
-    'Phone',
-    'Location',
-    'Status',
-    'Submitted At',
-    'Score',
-    'Current Role',
-    'Current Company',
-    'Previous Companies',
-    'Skills',
-    'Experience',
-    'Recommendation',
-    'Recommended Role'
+    { header: 'ID', key: 'id', width: 36 },
+    { header: 'Full Name', key: 'fullName', width: 20 },
+    { header: 'Email', key: 'email', width: 25 },
+    { header: 'Phone', key: 'phone', width: 15 },
+    { header: 'Location', key: 'location', width: 15 },
+    { header: 'Status', key: 'status', width: 12 },
+    { header: 'Submitted At', key: 'submittedAt', width: 22 },
+    { header: 'Score', key: 'score', width: 10 },
+    { header: 'Current Role', key: 'currentRole', width: 20 },
+    { header: 'Current Company', key: 'currentCompany', width: 20 },
+    { header: 'Previous Companies', key: 'previousCompanies', width: 30 },
+    { header: 'Skills', key: 'skills', width: 40 },
+    { header: 'Experience', key: 'experience', width: 35 },
+    { header: 'Recommendation', key: 'recommendation', width: 45 },
+    { header: 'Recommended Role', key: 'recommendedRole', width: 25 }
   ];
 
-  const rows = candidates.map(candidate => {
+  worksheet.columns = headers;
+
+  candidates.forEach(candidate => {
     let score = '';
     let skills = '';
     let experience = '';
@@ -153,14 +159,14 @@ export function generateCSVReport(candidates: Candidate[]): string {
       }
     }
 
-    return [
-      candidate.id,
-      candidate.fullName,
-      candidate.email,
-      candidate.phone || '',
+    worksheet.addRow({
+      id: candidate.id,
+      fullName: candidate.fullName,
+      email: candidate.email,
+      phone: candidate.phone || '',
       location,
-      candidate.status,
-      candidate.createdAt.toISOString(),
+      status: candidate.status,
+      submittedAt: candidate.createdAt.toISOString(),
       score,
       currentRole,
       currentCompany,
@@ -169,8 +175,18 @@ export function generateCSVReport(candidates: Candidate[]): string {
       experience,
       recommendation,
       recommendedRole
-    ].map(field => `"${(field || '').replace(/"/g, '""')}"`).join(',');
+    });
   });
 
-  return [headers.join(','), ...rows].join('\n');
+  worksheet.getRow(1).font = { bold: true };
+  
+  worksheet.eachRow((row) => {
+    row.eachCell((cell) => {
+      cell.alignment = { vertical: 'top', wrapText: true };
+    });
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  return buffer as Buffer;
 }
+
